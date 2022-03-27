@@ -203,46 +203,7 @@ class ListaOctogonal():
             temp = temp.Abajo
 
         return str(juntar)
-
-    def NumerodeLetras(self,Lista1,Lista2):
-        i=0
-        j=0
-        W1 = 0
-        B1 = 0
-        W2 = 0
-        B2 = 0
-        while i <= len(Lista1)-1:
-            Letra = Lista1[i]
-            if Letra == "W":
-                W1 = W1 + 1
-            elif Letra == "B":
-                B1 = B1 + 1
-            i=i+1
-
-        while j <= len(Lista2)-1:
-            Letra = Lista2[j]
-            if Letra == "W":
-                W2 = W2 + 1
-            elif Letra == "B":
-                B2 = B2 + 1
-            j = j + 1
-
-        return W1,B1,W2,B2
-
-    def Posiciones(self,R,C,F,S,cod1,Patron1,cod2,Patron2,NumLetras):
-         aux = self.Vertical.InicioY
-         MPatron2=[]
-         MPatron1=[]
-         n=e=nx=ny=0
-         Fila=R
-         Columna = C
-         W1= NumLetras[0]
-         B1 =NumLetras[1]
-         W2= NumLetras[2]
-         B2=NumLetras[3]
-         vitacora=["Voltear Azulejo","Intercambio Horizontal","Intercambio Vertical"]
-
-
+   
 
     def graficar(self,f,c,co):
         i=1
