@@ -1,5 +1,5 @@
 import tkinter
-import xml.etree.ElementTree as ET
+
 from functools import partial
 from tkinter import *
 from tkinter import Menu, ttk, filedialog
@@ -78,33 +78,40 @@ class Ventana():
         combo2.place(x=75, y=240)
         opciones2 = ['Rescate', 'Recoletar']
         combo2["values"] = opciones2
-        if self.Robot.get() == "":
-            MessageBox.showwarning("Alerta", "No a elegido ningun Robot aun")
-        else:
-            btnagregar = Button(self.windowR, text="Realizar Mision",font=(fuente, 11), command= partial(Ventana.cerrarventana, self),bg='#3CFF01' )
-            btnagregar.place(x=70, y=275)
+       
+        btnagregar = Button(self.windowR, text="Realizar Mision",font=(fuente, 11), command= partial(Ventana.cerrarventana, self),bg='#3CFF01' )
+        btnagregar.place(x=70, y=275)
 
     def ElegirRobot(self):
-
-        if self.Robot.get() == "Robot1":
-            self.RobotTipo.set("ChapinFire")
+        if self.Robot.get() == "":
+            MessageBox.showwarning("Alerta", "No a elegido ningun Robot aun")
+            self.windowR.destroy()
+            Ventana.VentanaRobots(self)
         else:
-            self.RobotTipo.set("ChapinRescate")
+            if self.Robot.get() == "Robot1":
+                self.RobotTipo.set("ChapinFire")
+            else:
+                self.RobotTipo.set("ChapinRescate")
 
         self.infoR.set(self.RobotTipo.get())
 
     def cerrarventana(self):
-        if self.RobotTipo.get() == "ChapinFire" and self.mision.get()=="Rescate":
-            MessageBox.showwarning("Alerta", self.RobotTipo.get()+", no puede realizar Misiones de "+self.mision.get())
-            self.windowR.destroy()
-            Ventana.VentanaRobots(self)
-        elif self.RobotTipo.get() == "ChapinRescate" and self.mision.get()=="Recoletar":
-            MessageBox.showwarning("Alerta", self.RobotTipo.get() + ", no puede realizar Misiones de "+self.mision.get())
+        if self.mision.get() == "":
+            MessageBox.showwarning("Alerta", "No a elegido ninguna Mision aun")
             self.windowR.destroy()
             Ventana.VentanaRobots(self)
         else:
-            MessageBox.showinfo("Informaicon", "La mision ha dado inicio")
-            self.windowR.destroy()
+            if self.RobotTipo.get() == "ChapinFire" and self.mision.get()=="Rescate":
+                MessageBox.showwarning("Alerta", self.RobotTipo.get()+", no puede realizar Misiones de "+self.mision.get())
+                self.windowR.destroy()
+                Ventana.VentanaRobots(self)
+            elif self.RobotTipo.get() == "ChapinRescate" and self.mision.get()=="Recoletar":
+                MessageBox.showwarning("Alerta", self.RobotTipo.get() + ", no puede realizar Misiones de "+self.mision.get())
+                self.windowR.destroy()
+                Ventana.VentanaRobots(self)
+            else:
+                MessageBox.showinfo("Informaicon", "La mision ha dado inicio")
+                self.windowR.destroy()
 
     def Cargar(self):
         ruta = filedialog.askopenfilename(initialdir = "/", title= "Selecione Archivo",filetypes = (("xml files","*.xml"),("todos los archivos","*.*")))

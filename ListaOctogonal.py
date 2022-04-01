@@ -218,7 +218,7 @@ class ListaOctogonal():
 
             temp2 = temp.ListaV.Inicio
             while temp2 != None:
-                if (temp2.Letra =="B"):
+                if (temp2.Letra =='*'):
                     color="black"
                     juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'  fontcolor=white];\n'
                     if j == 1:
@@ -235,7 +235,7 @@ class ListaOctogonal():
                     elif i>1:
                         enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
 
-                elif(temp2.Letra =="W"):
+                elif(temp2.Letra ==' '):
                     color = "white"
                     juntar = str(juntar) +'\nnodo'+str(i)+'_'+str(j)+'[label="' + str(temp2.Letra) + '", fillcolor="' + str(color) + '", grupo='+str(j+1)+'];\n'
                     if j == 1:
@@ -292,15 +292,4 @@ class ListaOctogonal():
         startfile('graphviz.png')
 
         return juntar+alinear+enlacesn+alinear2
-
-
-
-
-
-
-
-
-            
-
-      
       
