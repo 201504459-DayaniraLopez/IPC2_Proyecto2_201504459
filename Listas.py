@@ -29,6 +29,23 @@ class ListaRobot:
         Temp.Siguiente = Robot
         self.Final = Robot
 
+    def imprimir(self):
+        temp = self.Inicio
+        Robots = []
+        while temp is not None:
+            Robots.append(temp.Nombre)
+            temp = temp.Siguiente
+        return Robots
+    def buscar(self, nombre):
+        temp = self.Inicio
+        while temp is not None:
+            if nombre == temp.Nombre:
+                tipo = temp.Tipo
+                return tipo
+                break
+            temp = temp.Siguiente
+
+
 class ListaCiudad:
     def __init__(self):
         self.Inicio=None
