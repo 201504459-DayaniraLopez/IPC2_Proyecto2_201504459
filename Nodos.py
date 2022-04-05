@@ -8,9 +8,9 @@ class NodoCelda:
         self.Color = color
         self.ValorR = valorR
         self.Siguiente = None
-    
+
 class NodoCiudad:
-    def __init__(self,nombre,fila, columna, patron):
+    def __init__(self,nombre,fila,columna,patron):
         self.Nombre = nombre
         self.Fila = fila
         self.Columna = columna

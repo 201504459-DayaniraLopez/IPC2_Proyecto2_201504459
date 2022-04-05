@@ -6,6 +6,7 @@ from tkinter import Menu, ttk, filedialog
 from tkinter import messagebox as MessageBox
 import Listas
 import Nodos
+import ListaOctogonal as LO
 
 
 LCiudad = Listas.ListaCiudad()
@@ -39,7 +40,7 @@ class Ventana():
         opciones1 = MapasCiudades
         comboC["values"] = opciones1
 
-        btMostrar = Button(self.window, text="Mostrar Mapa", font=(fuente, 10), bg = '#AFC9D3')
+        btMostrar = Button(self.window, text="Mostrar Mapa", font=(fuente, 10), bg = '#AFC9D3', command = self.graficar)
         btMostrar.place(x=550, y=30)
         btMision = Button(self.window, text="Iniciar Mision", font=(fuente, 10), bg='#21B9F4', command = partial(Ventana.VentanaRobots,self))
         btMision.place(x=390, y=70)
@@ -59,12 +60,15 @@ class Ventana():
         TipoR = Label(self.windowR, text="Tipo de Robot", font=(fuente, 11), bg= fondo, fg = letra)
         TipoR.place(x=25, y=150)
 
-        self.infoR=self.color=self.RobotTipo= StringVar()
+        self.color=StringVar()
+        self.RobotTipo= StringVar()
+        self.Combate = StringVar()
         self.RobotTipo.set("No Definido")
-        self.infoR.set("No Definido")
+        self.Combate.set("No Definido")
 
-        self.txtTipoR = Label(self.windowR, textvariable=self.infoR,font=(fuente, 11),bg='#21C6F4')
+        self.txtTipoR = Label(self.windowR, textvariable=self.RobotTipo,font=(fuente, 11),bg='#21C6F4')
         self.txtTipoR.place(x=150, y=150)
+
         info = Label(self.windowR, text="Robots Disponibles: ", font=(fuente, 11), bg =fondo, fg =letra)
         info.place(x=60, y=40)
 
@@ -77,17 +81,41 @@ class Ventana():
         btelegir = Button(self.windowR, text="Selecionar Robot", font=(fuente, 10), bg='#AFC9D3',command= partial(Ventana.ElegirRobot,self))
         btelegir.place(x=77, y=105)
 
+        ValorC = Label(self.windowR, text="Valor de Combate", font=(fuente, 11), bg=fondo, fg=letra)
+        ValorC.place(x=25, y=190)
+
+        self.txtCombate = Label(self.windowR, textvariable=self.Combate, font=(fuente, 11), bg='#21C6F4')
+        self.txtCombate.place(x=180, y=190)
+
+
         info2 = Label(self.windowR, text="Elija una Mision", font=(fuente, 11), bg='#E5F421')
-        info2.place(x=70, y=190)
+        info2.place(x=70, y=220)
 
         self.mision = StringVar()
         combo2 = ttk.Combobox(self.windowR, textvariable=self.mision)
-        combo2.place(x=75, y=240)
+        combo2.place(x=75, y=260)
+
         opciones2 = ['Rescate', 'Extracion De Recursos']
         combo2["values"] = opciones2
-       
+
         btnagregar = Button(self.windowR, text="Realizar Mision",font=(fuente, 11), command= partial(Ventana.cerrarventana, self),bg='#3CFF01' )
-        btnagregar.place(x=70, y=275)
+        btnagregar.place(x=70, y=295)
+
+    def graficar(self):
+        ListaOc = LO.ListaOctogonal()
+        i=0
+        datos = LCiudad.Buscar(self.Mapa.get())
+        F = int(datos[0])
+        C = int(datos[1])
+        Mapap= str(datos[2])
+        Nombre = str(datos[3])
+        ListaOc.insertar(C,F,Mapap)
+        print(ListaOc.recorrer())
+        ListaOc.graficar(C,F,Mapap,Nombre)
+        DatoM = LCelda.UnidadesM(self.Mapa.get())
+        for i int len()
+
+
 
     def ElegirRobot(self):
         if self.Robot.get() == "":
@@ -95,9 +123,9 @@ class Ventana():
             self.windowR.destroy()
             Ventana.VentanaRobots(self)
         else:
-            TipoRobot = LRobot.buscar(self.Robot.get())
-            self.RobotTipo.set(TipoRobot)
-        self.infoR.set(self.RobotTipo.get())
+            datos = LRobot.buscar(self.Robot.get())
+            self.RobotTipo.set(datos[0])
+            self.Combate.set(datos[1])
 
     def cerrarventana(self):
         if self.mision.get() == "":
@@ -109,7 +137,7 @@ class Ventana():
                 MessageBox.showwarning("Alerta", self.RobotTipo.get()+", no puede realizar Misiones de "+self.mision.get())
                 self.windowR.destroy()
                 Ventana.VentanaRobots(self)
-            elif self.RobotTipo.get() == "ChapinRescate" and self.mision.get()=="Recoletar":
+            elif self.RobotTipo.get() == "ChapinRescate" and self.mision.get()=="Extracion De Recursos":
                 MessageBox.showwarning("Alerta", self.RobotTipo.get() + ", no puede realizar Misiones de "+self.mision.get())
                 self.windowR.destroy()
                 Ventana.VentanaRobots(self)
@@ -123,18 +151,19 @@ class Ventana():
         raiz = archivo_xml.getroot()
         x = y = 0
         j = n = 0
-        mapa = []
+        CiudadMapa =""
         # iniciar Recorrido
         for padre in raiz:
             if padre.tag == "listaCiudades":
                 for hijo in padre:
                     while j <= len(hijo) - 1:
                         if hijo[j].tag == "nombre":
-                            filas = hijo[j].get('filas')
-                            columnas = hijo[j].get('columnas')
-                            nombre = hijo[j].text
+                            filas = hijo[0].get('filas')
+                            columnas = hijo[0].get('columnas')
+                            nombre = hijo[0].text
                         elif hijo[j].tag == "fila":
                             patron = hijo[j].text.replace('"', "")
+                            CiudadMapa = CiudadMapa + str(patron)
                             for celda in patron:
                                 if celda == " ":
                                     tipoc = "Camino"
@@ -160,7 +189,6 @@ class Ventana():
                                     LCelda.Insertar(Nodos.NodoCelda(nombre, tipoc, PosxC, PosyC, colorC, None))
                                 x = x + 1
                             x = 0
-                            mapa.append(patron)
                             y = y + 1
                         elif hijo[j].tag == "unidadMilitar":
                             tipoc = "Militar"
@@ -168,10 +196,10 @@ class Ventana():
                             PosxM = hijo[j].get('columna')
                             PosyM = hijo[j].get('fila')
                             ValorM = int(hijo[j].text)
+                            LCelda.Insertar(Nodos.NodoCelda(nombre, tipoc, PosxM, PosyM, color, ValorM))
                         j = j + 1
-                    LCiudad.Insertar(Nodos.NodoCiudad(nombre, filas, columnas, mapa))
-                    LCelda.Insertar(Nodos.NodoCelda(nombre, tipoc, PosxM, PosyM, color, ValorM))
-                    mapa.clear()
+                    LCiudad.Insertar(Nodos.NodoCiudad(nombre, filas, columnas, CiudadMapa))
+                    CiudadMapa=""
                     j = 0
                     x = 0
                     y = 0
@@ -191,7 +219,7 @@ class Ventana():
         self.Iniciar(LCiudad.imprimir())
 
 def main():
-        reproductor = Ventana()
+        Ventana()
         return 0
 
 if __name__ == '__main__':

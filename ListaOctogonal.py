@@ -157,7 +157,7 @@ class ListaOctogonal():
         while nodoy != None:
             aux = nodoy.ListaV.Inicio
 
-            while aux is not  None:
+            while aux is not None:
                 if aux.x == x and aux.y == y:
                     return aux
                 
@@ -190,6 +190,19 @@ class ListaOctogonal():
             n=i
             j=0
 
+    def insertarM(self, x, y, valor):
+        # si existe no deberia de insertar nada
+        if self.verificar(x, y) == None:
+            if self.ladox.existe(x) == None:
+                self.ladox.insertar(NodoCabeceraX(x))
+            if self.ladoy.existe(y) == None:
+                self.ladoy.insertar(NodoCabeceraY(y))
+            temx = self.ladox.existe(x)
+            temy = self.ladoy.existe(y)
+            Dato = NodoDato(x, y, valor)
+            temx.listav.insertar(Dato)
+            temy.listah.insertar(Dato)
+
     def recorrer(self):
         juntar = ''
         temp = self.Vertical.InicioY
@@ -201,11 +214,10 @@ class ListaOctogonal():
                 temp2 = temp2.Abajo
             juntar = str(juntar) + '|\n'
             temp = temp.Abajo
-
         return str(juntar)
    
 
-    def graficar(self,f,c,co):
+    def graficar(self,c,f,co, nombreM):
         i=1
         j=1
         enlacesn=''
@@ -215,12 +227,11 @@ class ListaOctogonal():
         alinearco=''
         temp = self.Vertical.InicioY
         while temp != None:
-
             temp2 = temp.ListaV.Inicio
             while temp2 != None:
                 if (temp2.Letra =='*'):
                     color="black"
-                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'  fontcolor=white];\n'
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="''",fillcolor="'+str(color)+'", grupo='+str(j+1)+' ];\n'
                     if j == 1:
                         alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
                         alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
@@ -237,7 +248,7 @@ class ListaOctogonal():
 
                 elif(temp2.Letra ==' '):
                     color = "white"
-                    juntar = str(juntar) +'\nnodo'+str(i)+'_'+str(j)+'[label="' + str(temp2.Letra) + '", fillcolor="' + str(color) + '", grupo='+str(j+1)+'];\n'
+                    juntar = str(juntar) +'\nnodo'+str(i)+'_'+str(j)+'[label="''",fillcolor="' + str(color) + '", grupo='+str(j+1)+'];\n'
                     if j == 1:
                         alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+';' + '\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
                         enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j + 1) + ';'
@@ -249,6 +260,56 @@ class ListaOctogonal():
                     if i == 1:
                         enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
                     elif i > 1:
+                        enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
+
+                elif (temp2.Letra =='E'):
+                    color="green"
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    if j == 1:
+                        alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                        alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
+                        enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j + 1) + ';'
+                    elif j<c:
+                        enlacesn = enlacesn +'\nnodo'+str(i)+'_'+str(j)+'->'+'nodo'+str(i)+'_'+str(j+1)+';'
+                        alinear2 = alinear2+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                    elif j == c:
+                        alinear2 = alinear2 + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(j) + '}\n'
+                    if i == 1:
+                        enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                    elif i>1:
+                        enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
+
+                elif (temp2.Letra =='C'):
+                    color="blue"
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    if j == 1:
+                        alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                        alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
+                        enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j + 1) + ';'
+                    elif j<c:
+                        enlacesn = enlacesn +'\nnodo'+str(i)+'_'+str(j)+'->'+'nodo'+str(i)+'_'+str(j+1)+';'
+                        alinear2 = alinear2+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                    elif j == c:
+                        alinear2 = alinear2 + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(j) + '}\n'
+                    if i == 1:
+                        enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                    elif i>1:
+                        enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                elif (temp2.Letra =='R'):
+                    color="gray"
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    if j == 1:
+                        alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                        alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
+                        enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j + 1) + ';'
+                    elif j<c:
+                        enlacesn = enlacesn +'\nnodo'+str(i)+'_'+str(j)+'->'+'nodo'+str(i)+'_'+str(j+1)+';'
+                        alinear2 = alinear2+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
+                    elif j == c:
+                        alinear2 = alinear2 + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(j) + '}\n'
+                    if i == 1:
+                        enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                    elif i>1:
                         enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
                 j = j + 1
                 temp2 = temp2.Abajo
@@ -265,9 +326,8 @@ class ListaOctogonal():
         enlacesc = ""
         cadenaf = ""
         enlacesf = ""
-        graphviz='digraph G {\nnode[shape = box fillcolor = "#FFEDDB" style = filled ]\n   label = "Pisos Artesanales S.A."\n   bgcolor = ""#008B8B"\n   subgraph clustre_p{\n   raiz[label ='+str(co)+' fillcolor="#008B8B"]\n   edge [dir= "both"]\n'
+        graphviz='digraph G {\nnode[shape = box fillcolor = "#FFEDDB" style = filled ]\n   label = "Mapa: '+nombreM+'"\n   bgcolor = ""#008B8B"\n   subgraph clustre_p{\n   raiz[label ='"C01"' fillcolor="#008B8B"]\n   edge [dir= "both"]\n'
         while (i <= f):
-
            if i < f:
                cadenaf = cadenaf+'\nFila'+str(i)+'[label="'+str(i)+'", group=1];'
                enlacesf ="\n" +enlacesf+'Fila'+str(i)+'->'+'Fila'+str(i+1)+';'
@@ -290,6 +350,5 @@ class ListaOctogonal():
         # Motor de grafic lo compile
         system('dot -Tpng graphviz.dot -o graphviz.png')  # nombre del archivo que se escribio/ archivo de salida
         startfile('graphviz.png')
-
         return juntar+alinear+enlacesn+alinear2
       

@@ -1,4 +1,5 @@
 
+
 class ListasCelda:
     def __init__(self):
         self.Inicio=None
@@ -13,6 +14,21 @@ class ListasCelda:
             Temp = Temp.Siguiente
         Temp.Siguiente = Celda
         self.Final = Celda
+
+    def UnidadesM(self,mapa):
+        temp = self.Inicio
+        celda=[]
+        while temp is not None:
+            if temp.TipoCelda == "Militar" and temp.Mapa == mapa:
+                posx= temp.PosX
+                posy= temp.PosY
+                Valor = temp.ValorR
+                celda.append([posx,posy,Valor])
+                temp = temp.Siguiente
+            elif temp.TipoCelda != "Militar" or  temp.Mapa != mapa:
+                temp = temp.Siguiente
+
+        return celda
 
 class ListaRobot:
     def __init__(self):
@@ -41,11 +57,10 @@ class ListaRobot:
         while temp is not None:
             if nombre == temp.Nombre:
                 tipo = temp.Tipo
-                return tipo
+                combate = temp.ValorC
+                return tipo,combate
                 break
             temp = temp.Siguiente
-
-
 class ListaCiudad:
     def __init__(self):
         self.Inicio=None
@@ -59,7 +74,19 @@ class ListaCiudad:
         while Temp.Siguiente is not None:
             Temp = Temp.Siguiente
         Temp.Siguiente = Ciudad
-        self.Final = Ciudad
+
+
+    def Buscar(self, Mapa):
+        temp = self.Inicio
+        while temp is not None:
+            if Mapa == temp.Nombre:
+                nombre = temp.Nombre
+                Lpatron = temp.Patron
+                FilaM = temp.Fila
+                ColumnaM=temp.Columna
+                return FilaM,ColumnaM, Lpatron , nombre
+                break
+            temp = temp.Siguiente
 
     def imprimir(self):
         temp = self.Inicio
