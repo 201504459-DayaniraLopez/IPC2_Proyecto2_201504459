@@ -1,10 +1,11 @@
 from os import startfile,system
 
 class NodoDato():
-    def __init__(self,x,y,letra):
+    def __init__(self,x,y,letra,valor):
         self.x = x
         self.y = y
         self.Letra = letra
+        self.Valor = valor
         self.Siguiente = None
         self.Anterior= None
         self.Abajo = None
@@ -181,7 +182,7 @@ class ListaOctogonal():
                         self.Vertical.insertarY(NodoCabeceraY(j))
                 TempX = self.Horizontal.Existe(i)
                 TempY = self.Vertical.Existe(j)
-                Nuevo = NodoDato(i,j,Letra)
+                Nuevo = NodoDato(i,j,Letra,None)
                 TempY.ListaV.insertar(Nuevo)
                 TempX.ListaH.insertar(Nuevo)
                 n = n + x
@@ -190,19 +191,69 @@ class ListaOctogonal():
             n=i
             j=0
 
-    def insertarM(self, x, y, valor):
-        # si existe no deberia de insertar nada
-        if self.verificar(x, y) == None:
-            if self.ladox.existe(x) == None:
-                self.ladox.insertar(NodoCabeceraX(x))
-            if self.ladoy.existe(y) == None:
-                self.ladoy.insertar(NodoCabeceraY(y))
-            temx = self.ladox.existe(x)
-            temy = self.ladoy.existe(y)
-            Dato = NodoDato(x, y, valor)
-            temx.listav.insertar(Dato)
-            temy.listah.insertar(Dato)
+    def insertarM(self, x, y,letra,valor):
+        temp = self.Vertical.InicioY
+        while temp != None:
+            temp2 = temp.ListaV.Inicio
+            while temp2 != None:
+                if temp2.x == int(x) and temp2.y== int(y):
+                   temp2.Letra=letra
+                   temp2.Valor=int(valor)
+                temp2 = temp2.Abajo
+            temp = temp.Abajo
+    def CaminosDiponibles(self,xI,yI,xF,yF,):
+        Caminos=[]
+        x=0
+        y=0
+        temp1= self.Vertical.InicioY
+        PosyI = yI
+        PosxI = xI
+        while temp1 != None:
+            if yI < yF and xI < xF:
+                temp2 = temp1.ListaV.Inicio
+                while temp2 != None:
+                        #Si mi pisicion final esta a la derecha
+                        if yI <= yF:
+                            #incia el recorrido en x
+                            if temp2.y == PosyI:
+                                #buscamos en la fila inicio las celdas blancas
+                                if temp2.Letra == ' ':
+                                    posx = temp2.x+1
+                                    posy = temp2.y+1
+                                    Letra = temp2.Letra
+                                    Caminos.append([posx, posy, Letra])
+                                    temp2 = temp2.Abajo
+                                if temp2.Abajo.Letra == "M" or temp2.Abajo.Letra == '*':
+                                    PosyI = temp2.y
+                                    PosxI = temp2.x
 
+                            if temp2.y == PosyI and temp2.x == PosxI:
+                                posx = temp2.x + 1
+                                posy = temp2.y + 1
+                                Letra = temp2.Letra
+                                Caminos.append([posx, posy, Letra])
+                                temp2 = temp2.Abajo
+
+                            elif temp2.y != PosyI or temp2.x != PosxI:
+                                temp2 = temp2.Abajo
+            temp1 = temp1.Abajo
+        return Caminos
+
+
+    def VerificarCelda(self, x, y,robot):
+        temp = self.Vertical.InicioY
+        while temp != None:
+            temp2 = temp.ListaV.Inicio
+            while temp2 != None:
+                if temp2.x == int(x)-1 and temp2.y == int(y)-1:
+                   letra = temp2.Letra
+                   if letra=="C" and robot ==  "ChapinRescue" or letra=="R" and robot == "ChapinFighter" :
+                        return True
+                   else:
+                        return False
+                elif temp2.x != int(x)-1 or temp2.y != int(y)-1 :
+                   temp2 = temp2.Abajo
+            temp = temp.Abajo
     def recorrer(self):
         juntar = ''
         temp = self.Vertical.InicioY
@@ -264,7 +315,7 @@ class ListaOctogonal():
 
                 elif (temp2.Letra =='E'):
                     color="green"
-                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="''", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
                     if j == 1:
                         alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
                         alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
@@ -281,7 +332,7 @@ class ListaOctogonal():
 
                 elif (temp2.Letra =='C'):
                     color="blue"
-                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="''", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
                     if j == 1:
                         alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
                         alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
@@ -297,7 +348,7 @@ class ListaOctogonal():
                         enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
                 elif (temp2.Letra =='R'):
                     color="gray"
-                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="'+str(temp2.Letra)+'", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
+                    juntar = str(juntar)+'nodo'+str(i)+'_'+str(j)+'[label="''", fillcolor="'+str(color)+'", grupo='+str(j+1)+'];\n'
                     if j == 1:
                         alinear = alinear + '\nFila' + str(i) + '->'+'nodo'+str(i)+'_'+str(j)+'\n{rank = same; Fila' + str(i) + ';' +'nodo'+str(i)+'_'+str(j)+'}\n'
                         alinearco = alinearco + 'Columna'+str(j)+ '->'+'nodo'+str(i)+'_'+str(j)+';'
@@ -311,6 +362,29 @@ class ListaOctogonal():
                         enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
                     elif i>1:
                         enlacesn = enlacesn + '\n nodo' + str(i-1) + '_' + str(j) +'->' + 'nodo' + str(i) + '_' + str(j) + ';'
+
+                elif (temp2.Letra == 'M'):
+                    color = "red"
+                    juntar = str(juntar) + 'nodo' + str(i) + '_' + str(j) + '[label="''", fillcolor="' + str(color) + '", grupo=' + str(j + 1) + '];\n'
+                    if j == 1:
+                        alinear = alinear + '\nFila' + str(i) + '->' + 'nodo' + str(i) + '_' + str(
+                            j) + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(j) + '}\n'
+                        alinearco = alinearco + 'Columna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                        enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(
+                            j + 1) + ';'
+                    elif j < c:
+                        enlacesn = enlacesn + '\nnodo' + str(i) + '_' + str(j) + '->' + 'nodo' + str(i) + '_' + str(
+                            j + 1) + ';'
+                        alinear2 = alinear2 + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(
+                            j) + '}\n'
+                    elif j == c:
+                        alinear2 = alinear2 + '\n{rank = same; Fila' + str(i) + ';' + 'nodo' + str(i) + '_' + str(
+                            j) + '}\n'
+                    if i == 1:
+                        enlacesn = enlacesn + '\nColumna' + str(j) + '->' + 'nodo' + str(i) + '_' + str(j) + ';'
+                    elif i > 1:
+                        enlacesn = enlacesn + '\n nodo' + str(i - 1) + '_' + str(j) + '->' + 'nodo' + str(
+                            i) + '_' + str(j) + ';'
                 j = j + 1
                 temp2 = temp2.Abajo
             j = 1
@@ -344,11 +418,11 @@ class ListaOctogonal():
                 columnas = columnas + 'Columna' + str(j)
             j = j + 1
         graphviz = graphviz+cadenaf+enlacesf+"\n"+cadenac+"\n"+enlacesc+"\n"+'raiz->Fila1\nraiz->Columna1\n{rank = same; raiz;'+columnas+'}'+juntar+alinear+alinear2+enlacesn+'\n}\n}'
-        miArchivo = open('graphviz.dot', 'w')
+        miArchivo = open('Graficas/graphviz.dot', 'w')
         miArchivo.write(graphviz)
         miArchivo.close()
         # Motor de grafic lo compile
-        system('dot -Tpng graphviz.dot -o graphviz.png')  # nombre del archivo que se escribio/ archivo de salida
-        startfile('graphviz.png')
+        system('dot -Tpng Graficas/graphviz.dot -o Graficas/graphviz.jpg')  # nombre del archivo que se escribio/ archivo de salida
+        startfile('Graficas\graphviz.jpg')
         return juntar+alinear+enlacesn+alinear2
       

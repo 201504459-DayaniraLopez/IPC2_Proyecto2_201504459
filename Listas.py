@@ -15,6 +15,22 @@ class ListasCelda:
         Temp.Siguiente = Celda
         self.Final = Celda
 
+    def PatronC(self, mapa):
+        temp = self.Inicio
+        celdaC = []
+        while temp is not None:
+            if temp.TipoCelda == "Camino" and temp.Mapa == mapa:
+                posx = temp.PosX+1
+                posy = temp.PosY+1
+                colorE = temp.Color
+                if colorE == "#FFFFF":
+                   color = "Blanco"
+                celdaC.append([posx, posy, color])
+                temp = temp.Siguiente
+            elif temp.TipoCelda != "Camino" or temp.Mapa != mapa:
+                temp = temp.Siguiente
+        return celdaC
+
     def UnidadesM(self,mapa):
         temp = self.Inicio
         celda=[]
@@ -27,7 +43,6 @@ class ListasCelda:
                 temp = temp.Siguiente
             elif temp.TipoCelda != "Militar" or  temp.Mapa != mapa:
                 temp = temp.Siguiente
-
         return celda
 
 class ListaRobot:
